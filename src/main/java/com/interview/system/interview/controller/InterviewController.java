@@ -47,7 +47,7 @@ public class InterviewController {
             }
             Optional<Interview> result = interviewRepo.findById(id);
             if (result.isPresent()) {
-                return ResponseEntity.ok().body(interviewRepo.findById(id));
+                return ResponseEntity.ok().body(result.get());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Details are not found for id: " + id);
             }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Optional;
 import java.util.Random;
 
 @RestController
@@ -37,6 +38,23 @@ public class IntervieweeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Interviewee must have an ID");
         }
         return saveOrUpdateOperation(interViewee);
+    }
+
+    @GetMapping("/interviewee/{id}")
+    public ResponseEntity<?> getIntervieweeById(@PathVariable(name = "id") Long id) {
+        try {
+            if (id == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Interviewee ID cannot be null");
+            }
+            Optional<InterViewee> interViewee = intervieweeRepo.findById(id);
+            if (interViewee.isPresent()) {
+                return ResponseEntity.ok().body(interViewee.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Details are not found for id: " + id);
+            }
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Save Operation was Not Successful");
+        }
     }
 
     private ResponseEntity<?> saveOrUpdateOperation(InterViewee interViewee) {
